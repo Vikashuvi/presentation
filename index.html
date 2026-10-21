@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Understanding IT Application Architecture | Visual Presentation</title>
+  <meta name="description" content="A visual, interactive guide to application architecture: server-based vs. serverless infrastructure for non-technical audiences.">
+  
+  <!-- Google Fonts: Clean sans-serif paired with hand-drawn editorial script -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- SVG Filter and Markers -->
+  <svg class="svg-defs" aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;">
+    <defs>
+      <marker id="arrow-ink" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b" />
+      </marker>
+      <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb" />
+      </marker>
+      <marker id="arrow-orange" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#ea580c" />
+      </marker>
+    </defs>
+  </svg>
+
+  <div class="presentation-wrapper">
+    <!-- Header Navigation -->
+    <header class="presentation-header">
+      <div class="header-left">
+        <span class="topic-tag">Architecture 101</span>
+        <span class="header-divider">/</span>
+        <span class="header-sub">Visual Guide for Non-Engineers</span>
+      </div>
+
+      <nav class="scene-indicators" aria-label="Slide Navigation">
+        <button class="indicator-dot active" data-scene="0" aria-label="Slide 1: Behind the Screen">
+          <span class="dot-num">01</span>
+          <span class="dot-label">Behind the Screen</span>
+        </button>
+        <button class="indicator-dot" data-scene="1" aria-label="Slide 2: Two Approaches">
+          <span class="dot-num">02</span>
+          <span class="dot-label">Two Approaches</span>
+        </button>
+        <button class="indicator-dot" data-scene="2" aria-label="Slide 3: The Takeaway">
+          <span class="dot-num">03</span>
+          <span class="dot-label">The Takeaway</span>
+        </button>
+      </nav>
+
+      <div class="header-right">
+        <button class="btn-icon" id="btn-fullscreen" title="Toggle Fullscreen" aria-label="Toggle Fullscreen">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Presentation Stage -->
+    <main class="presentation-stage">
+
+      <!-- ==============================================
+           SCENE 1: How does an app actually work?
+           ============================================== -->
+      <section class="scene-card active" id="scene-0" aria-label="Scene 1: Every app has an architecture">
+        <div class="scene-header">
+          <span class="scene-badge orange">Scene 01 &bull; Foundations</span>
+          <h1 class="scene-title">Every app has an architecture.</h1>
+          <p class="scene-subtitle">Let's see what happens behind the screen.</p>
+        </div>
+
+        <div class="scene-content scene-1-visual-story">
+          <!-- Main Hero Illustration Card -->
+          <div class="hero-illustration-frame">
+            <img 
+              src="assets/scene1.jpg" 
+              alt="Xiaohei exploring behind the screen from phone to server" 
+              class="hero-scene-img" 
+              id="scene1-img"
+            />
+            
+            <!-- Interactive Overlay Badges -->
+            <div class="scene-overlay-badge badge-phone">
+              <span class="badge-label">1. User Action</span>
+              <span class="badge-hand">"A tap on the phone..."</span>
+            </div>
+
+            <div class="scene-overlay-badge badge-packet" id="badge-request-packet">
+              <span class="badge-label blue">2. Network Request</span>
+              <span class="badge-hand blue">"Travels through the air"</span>
+            </div>
+
+            <div class="scene-overlay-badge badge-server">
+              <span class="badge-label green">3. Infrastructure</span>
+              <span class="badge-hand green">"Computers process & save"</span>
+            </div>
+
+            <!-- Interactive Trigger Button directly over phone -->
+            <button class="hero-interactive-trigger" id="btn-trigger-scene1" title="Click to simulate tap">
+              <span class="trigger-icon">👆</span>
+              <span class="trigger-text">Tap to Simulate Request</span>
+              <span class="trigger-pulse-ring"></span>
+            </button>
+          </div>
+
+          <!-- Bottom Caption / Storyline Bar -->
+          <div class="scene-storyline-bar">
+            <div class="storyline-item">
+              <span class="story-dot orange"></span>
+              <span class="story-title">Familiar Screen</span>
+              <p class="story-desc">You tap a button to order coffee, book a ride, or send a message.</p>
+            </div>
+            <div class="story-arrow-divider">→</div>
+            <div class="storyline-item">
+              <span class="story-dot blue"></span>
+              <span class="story-title">Invisible Journey</span>
+              <p class="story-desc">Your request leaves the glass screen and travels across the network.</p>
+            </div>
+            <div class="story-arrow-divider">→</div>
+            <div class="storyline-item">
+              <span class="story-dot green"></span>
+              <span class="story-title">Real Infrastructure</span>
+              <p class="story-desc">Backend computers execute code, check balances, and store data.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCENE 2: Two ways to run an application's backend
+           ============================================== -->
+      <section class="scene-card" id="scene-1" aria-label="Scene 2: Two common approaches">
+        <div class="scene-header">
+          <div class="header-split-row">
+            <div>
+              <span class="scene-badge blue">Scene 02 &bull; Core Comparison</span>
+              <h2 class="scene-title">Two common approaches</h2>
+              <p class="scene-subtitle">How teams host and run their backend application code</p>
+            </div>
+
+            <!-- Presenter Flow Simulation Controls -->
+            <div class="comparison-toolbar">
+              <div class="toolbar-status">
+                <span class="pulse-indicator"></span>
+                <span class="status-text" id="flow-status-text">Click to simulate request flows</span>
+              </div>
+              <button class="btn-action-primary" id="btn-run-comparison">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span>Simulate Request Flow</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-content scene-2-layout">
+          <!-- ================= Approach A: Server-based ================= -->
+          <div class="architecture-column" id="col-server-based">
+            <div class="arch-card-header">
+              <div class="arch-title-group">
+                <span class="arch-letter">A</span>
+                <div>
+                  <h3 class="arch-heading">Server-based</h3>
+                  <span class="arch-tagline">Dedicated & constantly running</span>
+                </div>
+              </div>
+              <span class="arch-chip blue-chip">Team-Managed</span>
+            </div>
+
+            <!-- Visual Hero Card -->
+            <div class="arch-visual-preview">
+              <img src="assets/server_based.jpg" alt="Xiaohei with 24/7 Server" class="arch-illustration-img" />
+              <div class="arch-status-pill blue">
+                <span class="led-light active"></span>
+                <span>Running 24/7 &bull; Team oversees hardware & OS</span>
+              </div>
+            </div>
+
+            <!-- Flow Diagram Container -->
+            <div class="diagram-flow-container">
+              <!-- Step: User -->
+              <div class="flow-step" id="sb-step-user">
+                <div class="step-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <span class="step-label">User</span>
+              </div>
+
+              <!-- Arrow 1 -->
+              <div class="flow-arrow-unit" id="arrow-sb-1">
+                <div class="arrow-line">
+                  <div class="flow-packet" id="packet-sb-1"></div>
+                </div>
+                <svg width="10" height="10" viewBox="0 0 10 10" class="arrow-tip">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b"/>
+                </svg>
+              </div>
+
+              <!-- Step: Frontend -->
+              <div class="flow-step" id="sb-step-frontend">
+                <div class="step-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="3"/>
+                    <path d="M3 9h18"/>
+                    <circle cx="6" cy="6" r="1" fill="#18181b"/>
+                  </svg>
+                </div>
+                <span class="step-label">Frontend</span>
+              </div>
+
+              <!-- Arrow 2 -->
+              <div class="flow-arrow-unit" id="arrow-sb-2">
+                <div class="arrow-line">
+                  <div class="flow-packet" id="packet-sb-2"></div>
+                </div>
+                <svg width="10" height="10" viewBox="0 0 10 10" class="arrow-tip">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b"/>
+                </svg>
+              </div>
+
+              <!-- Step: Application Server -->
+              <div class="flow-step primary-target server-box" id="sb-step-server">
+                <div class="step-icon-wrap active-ring-blue">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+                    <line x1="6" y1="6" x2="6.01" y2="6"/>
+                    <line x1="6" y1="18" x2="6.01" y2="18"/>
+                  </svg>
+                </div>
+                <span class="step-label">App Server</span>
+              </div>
+
+              <!-- Arrow 3 -->
+              <div class="flow-arrow-unit" id="arrow-sb-3">
+                <div class="arrow-line">
+                  <div class="flow-packet" id="packet-sb-3"></div>
+                </div>
+                <svg width="10" height="10" viewBox="0 0 10 10" class="arrow-tip">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b"/>
+                </svg>
+              </div>
+
+              <!-- Step: Database -->
+              <div class="flow-step" id="sb-step-db">
+                <div class="step-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                  </svg>
+                </div>
+                <span class="step-label">Database</span>
+              </div>
+            </div>
+
+            <!-- Key Takeaway Note -->
+            <div class="arch-bullet-footer">
+              <span class="hand-bullet-icon">✦</span>
+              <p class="arch-bullet-text">Your team provisions virtual or physical machines. They run day and night waiting for traffic.</p>
+            </div>
+          </div>
+
+          <!-- ================= Approach B: Serverless ================= -->
+          <div class="architecture-column" id="col-serverless">
+            <div class="arch-card-header">
+              <div class="arch-title-group">
+                <span class="arch-letter orange-text">B</span>
+                <div>
+                  <h3 class="arch-heading">Serverless</h3>
+                  <span class="arch-tagline">On-demand & event-driven</span>
+                </div>
+              </div>
+              <span class="arch-chip orange-chip">Cloud-Managed</span>
+            </div>
+
+            <!-- Visual Hero Card -->
+            <div class="arch-visual-preview">
+              <img src="assets/serverless.jpg" alt="Xiaohei with On-Demand Cloud Box" class="arch-illustration-img" />
+              <div class="arch-status-pill orange">
+                <span class="led-light active orange"></span>
+                <span>Runs only on trigger &bull; Cloud manages infrastructure</span>
+              </div>
+            </div>
+
+            <!-- Flow Diagram Container -->
+            <div class="diagram-flow-container flow-5-steps">
+              <!-- Step: User -->
+              <div class="flow-step" id="sl-step-user">
+                <div class="step-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <span class="step-label">User</span>
+              </div>
+
+              <!-- Arrow 1 -->
+              <div class="flow-arrow-unit" id="arrow-sl-1">
+                <div class="arrow-line">
+                  <div class="flow-packet orange" id="packet-sl-1"></div>
+                </div>
+                <svg width="10" height="10" viewBox="0 0 10 10" class="arrow-tip">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b"/>
+                </svg>
+              </div>
+
+              <!-- Step: Frontend -->
+              <div class="flow-step" id="sl-step-frontend">
+                <div class="step-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="3"/>
+                    <path d="M3 9h18"/>
+                    <circle cx="6" cy="6" r="1" fill="#18181b"/>
+                  </svg>
+                </div>
+                <span class="step-label">Frontend</span>
+              </div>
+
+              <!-- Arrow 2 -->
+              <div class="flow-arrow-unit" id="arrow-sl-2">
+                <div class="arrow-line">
+                  <div class="flow-packet orange" id="packet-sl-2"></div>
+                </div>
+                <svg width="10" height="10" viewBox="0 0 10 10" class="arrow-tip">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b"/>
+                </svg>
+              </div>
+
+              <!-- Step: API Gateway -->
+              <div class="flow-step" id="sl-step-gateway">
+                <div class="step-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"/>
+                    <polyline points="8 6 2 12 8 18"/>
+                  </svg>
+                </div>
+                <span class="step-label">API Gateway</span>
+              </div>
+
+              <!-- Arrow 3 -->
+              <div class="flow-arrow-unit" id="arrow-sl-3">
+                <div class="arrow-line">
+                  <div class="flow-packet orange" id="packet-sl-3"></div>
+                </div>
+                <svg width="10" height="10" viewBox="0 0 10 10" class="arrow-tip">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b"/>
+                </svg>
+              </div>
+
+              <!-- Step: Cloud Function -->
+              <div class="flow-step primary-target function-box" id="sl-step-function">
+                <div class="step-icon-wrap active-ring-orange">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                  </svg>
+                </div>
+                <span class="step-label">Cloud Func</span>
+              </div>
+
+              <!-- Arrow 4 -->
+              <div class="flow-arrow-unit" id="arrow-sl-4">
+                <div class="arrow-line">
+                  <div class="flow-packet orange" id="packet-sl-4"></div>
+                </div>
+                <svg width="10" height="10" viewBox="0 0 10 10" class="arrow-tip">
+                  <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#18181b"/>
+                </svg>
+              </div>
+
+              <!-- Step: Database -->
+              <div class="flow-step" id="sl-step-db">
+                <div class="step-icon-wrap">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18181b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                  </svg>
+                </div>
+                <span class="step-label">Database</span>
+              </div>
+            </div>
+
+            <!-- Key Takeaway Note -->
+            <div class="arch-bullet-footer">
+              <span class="hand-bullet-icon orange-bullet">✦</span>
+              <p class="arch-bullet-text">Servers still exist, but they are automated. Code awakens only when invoked and winds down right after.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCENE 3: A simple takeaway
+           ============================================== -->
+      <section class="scene-card" id="scene-2" aria-label="Scene 3: A simple takeaway">
+        <div class="scene-header text-center">
+          <span class="scene-badge green">Scene 03 &bull; Key Insight</span>
+          <h2 class="scene-title title-large">Same goal. Different ways to run the backend.</h2>
+          <p class="scene-subtitle">Both patterns power modern applications worldwide.</p>
+        </div>
+
+        <div class="scene-content scene-3-takeaway-layout">
+          <!-- Hero Takeaway Visual -->
+          <div class="takeaway-hero-box">
+            <img src="assets/takeaway.jpg" alt="Xiaohei examining architecture internals" class="takeaway-hero-img" />
+          </div>
+
+          <!-- Summary Comparison Grid -->
+          <div class="takeaway-summary-grid">
+            <div class="summary-pill-card sb-card">
+              <div class="summary-card-top">
+                <span class="dot-indicator blue"></span>
+                <span class="summary-name">Server-based</span>
+              </div>
+              <p class="summary-desc">Full environment control, persistent in-memory state, predictable costs for steady traffic.</p>
+            </div>
+
+            <div class="summary-pill-card sl-card">
+              <div class="summary-card-top">
+                <span class="dot-indicator orange"></span>
+                <span class="summary-name">Serverless</span>
+              </div>
+              <p class="summary-desc">Zero idle server cost, auto-scaling up to thousands of requests, cloud-managed resilience.</p>
+            </div>
+          </div>
+
+          <!-- Transition Teaser Bridge -->
+          <div class="transition-bridge-box">
+            <div class="bridge-decor-pill">Next Section Preview</div>
+            <div class="bridge-body">
+              <p class="bridge-prompt-quote">"Now, let's open one of these architectures and see what happens inside."</p>
+              <div class="teaser-tags">
+                <span class="teaser-tag">Frontend Hosting</span>
+                <span class="teaser-tag">Backend Hosting</span>
+                <span class="teaser-tag">APIs</span>
+                <span class="teaser-tag">Databases</span>
+                <span class="teaser-tag">Authentication</span>
+                <span class="teaser-tag">Security</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Presentation Dock Controls -->
+    <footer class="presentation-dock">
+      <div class="dock-left">
+        <span class="keyboard-hint">
+          <kbd>←</kbd> <kbd>→</kbd> <span class="hint-text">to navigate</span>
+        </span>
+      </div>
+
+      <div class="dock-center">
+        <button class="nav-btn" id="btn-prev" aria-label="Previous Slide" title="Previous Slide (Left Arrow)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          <span>Prev</span>
+        </button>
+
+        <div class="slide-counter" aria-live="polite">
+          <span id="counter-current">1</span>
+          <span class="counter-slash">/</span>
+          <span id="counter-total">3</span>
+        </div>
+
+        <button class="nav-btn primary" id="btn-next" aria-label="Next Slide" title="Next Slide (Right Arrow or Space)">
+          <span>Next</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="dock-right">
+        <button class="btn-pill-action" id="btn-restart" title="Start Over">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
+          <span>Restart</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
