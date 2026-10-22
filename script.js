@@ -1,330 +1,235 @@
 /**
- * Visual Architecture Presentation
- * Controller for ian-xiaohei-scenes Style Presentation
+ * What Is Application Architecture? — Presentation Logic
+ * Pure Image-First Presentation with Smooth Left/Right Slide Moving.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // State
-  let currentScene = 0;
-  const totalScenes = 3;
-  let isAnimatingFlow = false;
-  let flowTimeouts = [];
 
-  // DOM Elements
-  const scenes = document.querySelectorAll('.scene-card');
-  const indicatorDots = document.querySelectorAll('.indicator-dot');
+  // --- State ---
+  let currentSlide = 0;
+  const totalSlides = 2;
+  let soundEnabled = false;
+
+  // Synthesized Web Audio
+  let audioCtx = null;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function playSound(type) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'slide') {
+        // Soft slide swoosh
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.exponentialRampToValueAtTime(560, now + 0.14);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.start(now);
+        osc.stop(now + 0.14);
+      } else if (type === 'click') {
+        // Crisp click
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(580, now);
+        osc.frequency.exponentialRampToValueAtTime(340, now + 0.05);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      }
+    } catch (e) {
+      console.warn('Audio playback error', e);
+    }
+  }
+
+  // --- DOM Elements ---
+  const sliderTrack = document.getElementById('slider-track');
+  const navTabs = [document.getElementById('tab-slide-0'), document.getElementById('tab-slide-1')];
+  const dotBtns = document.querySelectorAll('.dot-btn');
   const btnPrev = document.getElementById('btn-prev');
   const btnNext = document.getElementById('btn-next');
-  const btnRestart = document.getElementById('btn-restart');
-  const counterCurrent = document.getElementById('counter-current');
+  const currentSlideDisplay = document.getElementById('current-slide-num');
+  const btnSound = document.getElementById('btn-sound');
   const btnFullscreen = document.getElementById('btn-fullscreen');
 
-  // Scene 1 Elements
-  const btnTriggerScene1 = document.getElementById('btn-trigger-scene1');
-  const badgePacket = document.getElementById('badge-request-packet');
+  // --- Horizontal Slide Transition ---
+  function goToSlide(index, playAudio = true) {
+    if (index < 0 || index >= totalSlides) return;
+    currentSlide = index;
 
-  // Scene 2 Elements
-  const btnRunComparison = document.getElementById('btn-run-comparison');
-  const flowStatusText = document.getElementById('flow-status-text');
+    // Slide track horizontal move (left and right)
+    sliderTrack.style.transform = `translateX(-${currentSlide * 100}vw)`;
 
-  // Server-based step elements
-  const sbSteps = {
-    user: document.getElementById('sb-step-user'),
-    packet1: document.getElementById('packet-sb-1'),
-    frontend: document.getElementById('sb-step-frontend'),
-    packet2: document.getElementById('packet-sb-2'),
-    server: document.getElementById('sb-step-server'),
-    packet3: document.getElementById('packet-sb-3'),
-    db: document.getElementById('sb-step-db')
-  };
+    // Update Counter
+    if (currentSlideDisplay) {
+      currentSlideDisplay.textContent = (currentSlide + 1).toString().padStart(2, '0');
+    }
 
-  // Serverless step elements
-  const slSteps = {
-    user: document.getElementById('sl-step-user'),
-    packet1: document.getElementById('packet-sl-1'),
-    frontend: document.getElementById('sl-step-frontend'),
-    packet2: document.getElementById('packet-sl-2'),
-    gateway: document.getElementById('sl-step-gateway'),
-    packet3: document.getElementById('packet-sl-3'),
-    func: document.getElementById('sl-step-function'),
-    packet4: document.getElementById('packet-sl-4'),
-    db: document.getElementById('sl-step-db')
-  };
-
-  /**
-   * Navigation to a specific scene index
-   */
-  function goToScene(index) {
-    if (index < 0 || index >= totalScenes) return;
-
-    clearAllFlowTimeouts();
-    currentScene = index;
-
-    // Update active scene cards
-    scenes.forEach((scene, i) => {
-      scene.classList.toggle('active', i === currentScene);
+    // Update Tabs
+    navTabs.forEach((tab, idx) => {
+      if (tab) {
+        tab.classList.toggle('active', idx === currentSlide);
+      }
     });
 
-    // Update indicator dots
-    indicatorDots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === currentScene);
+    // Update Dots
+    dotBtns.forEach((dot, idx) => {
+      dot.classList.toggle('active', idx === currentSlide);
     });
 
-    // Update counter
-    counterCurrent.textContent = currentScene + 1;
+    // Update Next/Prev state
+    btnPrev.disabled = (currentSlide === 0);
+    if (currentSlide === totalSlides - 1) {
+      btnNext.innerHTML = `<span>Completed</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    } else {
+      btnNext.innerHTML = `<span>Next</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+    }
 
-    // Update dock buttons
-    btnPrev.disabled = currentScene === 0;
-    btnNext.disabled = currentScene === totalScenes - 1;
-
-    // Slide-specific triggers
-    if (currentScene === 1) {
-      resetScene2Visuals();
-      const autoTimer = setTimeout(() => {
-        runComparisonSimulation();
-      }, 700);
-      flowTimeouts.push(autoTimer);
+    if (playAudio) {
+      playSound('slide');
     }
   }
 
-  function nextScene() {
-    if (currentScene < totalScenes - 1) {
-      goToScene(currentScene + 1);
+  function nextSlide() {
+    initAudio();
+    if (currentSlide < totalSlides - 1) {
+      goToSlide(currentSlide + 1);
     }
   }
 
-  function prevScene() {
-    if (currentScene > 0) {
-      goToScene(currentScene - 1);
+  function prevSlide() {
+    initAudio();
+    if (currentSlide > 0) {
+      goToSlide(currentSlide - 1);
     }
   }
 
-  // Event Listeners for Navigation
-  btnPrev.addEventListener('click', prevScene);
-  btnNext.addEventListener('click', nextScene);
-  btnRestart.addEventListener('click', () => goToScene(0));
+  // --- Event Listeners for Nav ---
+  btnNext.addEventListener('click', nextSlide);
+  btnPrev.addEventListener('click', prevSlide);
 
-  indicatorDots.forEach(dot => {
+  navTabs.forEach((tab, idx) => {
+    if (tab) {
+      tab.addEventListener('click', () => {
+        initAudio();
+        goToSlide(idx);
+      });
+    }
+  });
+
+  dotBtns.forEach((dot, idx) => {
     dot.addEventListener('click', () => {
-      const targetScene = parseInt(dot.getAttribute('data-scene'), 10);
-      goToScene(targetScene);
+      initAudio();
+      goToSlide(idx);
     });
   });
 
-  // Keyboard navigation
-  window.addEventListener('keydown', (e) => {
-    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
-
-    switch (e.key) {
-      case 'ArrowRight':
-      case 'PageDown':
-      case ' ': // Spacebar
-        e.preventDefault();
-        nextScene();
-        break;
-      case 'ArrowLeft':
-      case 'PageUp':
-        e.preventDefault();
-        prevScene();
-        break;
-      case 'Home':
-        e.preventDefault();
-        goToScene(0);
-        break;
-      case 'End':
-        e.preventDefault();
-        goToScene(totalScenes - 1);
-        break;
-      case 'f':
-      case 'F':
-        toggleFullscreen();
-        break;
+  // --- Sound Toggle ---
+  btnSound.addEventListener('click', () => {
+    initAudio();
+    soundEnabled = !soundEnabled;
+    const iconOn = btnSound.querySelector('.sound-icon-on');
+    const iconOff = btnSound.querySelector('.sound-icon-off');
+    if (soundEnabled) {
+      iconOn.classList.remove('hide');
+      iconOff.classList.add('hide');
+      btnSound.classList.add('active');
+      playSound('click');
+    } else {
+      iconOn.classList.add('hide');
+      iconOff.classList.remove('hide');
+      btnSound.classList.remove('active');
     }
   });
 
-  // Fullscreen support
-  function toggleFullscreen() {
+  // --- Fullscreen Toggle ---
+  btnFullscreen.addEventListener('click', () => {
+    initAudio();
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(err => {
-        console.warn(`Error attempting to enable fullscreen: ${err.message}`);
+        console.warn(`Fullscreen error: ${err.message}`);
       });
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
       }
     }
-  }
+  });
 
-  btnFullscreen.addEventListener('click', toggleFullscreen);
+  // --- Keyboard Shortcuts Navigation ---
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
 
-  // =========================================================================
-  // SCENE 1 INTERACTION: User Tap to Infrastructure Flow
-  // =========================================================================
-
-  function triggerScene1Tap() {
-    if (isAnimatingFlow) return;
-    isAnimatingFlow = true;
-
-    if (btnTriggerScene1) {
-      btnTriggerScene1.style.transform = 'translateY(1px) scale(0.96)';
-      setTimeout(() => {
-        btnTriggerScene1.style.transform = '';
-      }, 150);
+    switch (e.key) {
+      case 'ArrowRight':
+      case ' ': // Spacebar
+        e.preventDefault();
+        nextSlide();
+        break;
+      case 'ArrowLeft':
+        e.preventDefault();
+        prevSlide();
+        break;
+      case '1':
+        initAudio();
+        goToSlide(0);
+        break;
+      case '2':
+        initAudio();
+        goToSlide(1);
+        break;
+      case 'f':
+      case 'F':
+        btnFullscreen.click();
+        break;
+      case 'm':
+      case 'M':
+        btnSound.click();
+        break;
     }
+  });
 
-    // Pulse the middle request badge
-    if (badgePacket) {
-      badgePacket.style.transform = 'scale(1.15) translateY(-4px)';
-      badgePacket.style.borderColor = 'var(--blue-primary)';
-      badgePacket.style.boxShadow = '0 0 12px rgba(37, 99, 235, 0.4)';
+  // --- Touch / Swipe Support for Trackpad & Mobile ---
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  window.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  window.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
     }
-
-    const t1 = setTimeout(() => {
-      if (badgePacket) {
-        badgePacket.style.transform = '';
-        badgePacket.style.borderColor = '';
-        badgePacket.style.boxShadow = '';
-      }
-      isAnimatingFlow = false;
-    }, 1200);
-
-    flowTimeouts.push(t1);
   }
 
-  if (btnTriggerScene1) {
-    btnTriggerScene1.addEventListener('click', triggerScene1Tap);
-  }
+  // --- Initial Setup ---
+  goToSlide(0, false);
 
-  // =========================================================================
-  // SCENE 2 INTERACTION: Server-based vs. Serverless Comparison
-  // =========================================================================
-
-  function clearAllFlowTimeouts() {
-    flowTimeouts.forEach(t => clearTimeout(t));
-    flowTimeouts = [];
-    isAnimatingFlow = false;
-  }
-
-  function resetScene2Visuals() {
-    clearAllFlowTimeouts();
-
-    if (flowStatusText) flowStatusText.textContent = 'Click to simulate request flows';
-
-    // Clear server-based elements
-    Object.values(sbSteps).forEach(el => {
-      if (el) {
-        el.classList.remove('active');
-        el.classList.remove('animating');
-      }
-    });
-
-    // Clear serverless elements
-    Object.values(slSteps).forEach(el => {
-      if (el) {
-        el.classList.remove('active');
-        el.classList.remove('animating');
-      }
-    });
-  }
-
-  function runComparisonSimulation() {
-    if (isAnimatingFlow) return;
-    isAnimatingFlow = true;
-    resetScene2Visuals();
-    isAnimatingFlow = true;
-
-    if (flowStatusText) flowStatusText.textContent = '1. User action sends requests in parallel...';
-
-    // Step 1: Users trigger
-    if (sbSteps.user) sbSteps.user.classList.add('active');
-    if (slSteps.user) slSteps.user.classList.add('active');
-
-    // Stage 1 -> 2: Request packet travels to Frontends
-    const t1 = setTimeout(() => {
-      if (sbSteps.packet1) sbSteps.packet1.classList.add('animating');
-      if (slSteps.packet1) slSteps.packet1.classList.add('animating');
-    }, 200);
-
-    // Step 2: Frontends receive request
-    const t2 = setTimeout(() => {
-      if (sbSteps.user) sbSteps.user.classList.remove('active');
-      if (slSteps.user) slSteps.user.classList.remove('active');
-      if (sbSteps.frontend) sbSteps.frontend.classList.add('active');
-      if (slSteps.frontend) slSteps.frontend.classList.add('active');
-      if (flowStatusText) flowStatusText.textContent = '2. Frontend dispatches request to backend architecture...';
-    }, 700);
-
-    // Stage 2 -> 3: Packets leave Frontends
-    const t3 = setTimeout(() => {
-      if (sbSteps.packet2) sbSteps.packet2.classList.add('animating');
-      if (slSteps.packet2) slSteps.packet2.classList.add('animating');
-    }, 950);
-
-    // Step 3: Server-based reaches Server; Serverless reaches API Gateway
-    const t4 = setTimeout(() => {
-      if (sbSteps.frontend) sbSteps.frontend.classList.remove('active');
-      if (slSteps.frontend) slSteps.frontend.classList.remove('active');
-      
-      if (sbSteps.server) sbSteps.server.classList.add('active');
-      if (slSteps.gateway) slSteps.gateway.classList.add('active');
-
-      if (flowStatusText) {
-        flowStatusText.textContent = '3. Server-based hits active server; Serverless routes through API Gateway...';
-      }
-    }, 1450);
-
-    // Stage 3 -> 4:
-    // Server queries Database / Gateway triggers Cloud Function
-    const t5 = setTimeout(() => {
-      if (sbSteps.packet3) sbSteps.packet3.classList.add('animating');
-      if (slSteps.packet3) slSteps.packet3.classList.add('animating');
-    }, 1900);
-
-    // Step 4:
-    // Server reaches DB; Cloud Function awakens ⚡ on-demand
-    const t6 = setTimeout(() => {
-      if (slSteps.gateway) slSteps.gateway.classList.remove('active');
-      if (slSteps.func) slSteps.func.classList.add('active');
-      if (sbSteps.db) sbSteps.db.classList.add('active');
-
-      if (flowStatusText) {
-        flowStatusText.textContent = '4. Serverless spins up Cloud Function; Server-based queries Database...';
-      }
-    }, 2400);
-
-    // Serverless Cloud Function queries Database
-    const t7 = setTimeout(() => {
-      if (slSteps.packet4) slSteps.packet4.classList.add('animating');
-    }, 2900);
-
-    // Step 5: Both at Database / Complete
-    const t8 = setTimeout(() => {
-      if (slSteps.db) slSteps.db.classList.add('active');
-      if (flowStatusText) {
-        flowStatusText.textContent = '5. Requests fulfilled! Serverless function winds down.';
-      }
-    }, 3400);
-
-    // Cooldown and finish
-    const t9 = setTimeout(() => {
-      if (sbSteps.server) sbSteps.server.classList.remove('active');
-      if (sbSteps.db) sbSteps.db.classList.remove('active');
-      if (slSteps.func) slSteps.func.classList.remove('active');
-      if (slSteps.db) slSteps.db.classList.remove('active');
-
-      if (flowStatusText) {
-        flowStatusText.textContent = 'Comparison complete. Ready to run again.';
-      }
-      isAnimatingFlow = false;
-    }, 4500);
-
-    flowTimeouts.push(t1, t2, t3, t4, t5, t6, t7, t8, t9);
-  }
-
-  if (btnRunComparison) {
-    btnRunComparison.addEventListener('click', runComparisonSimulation);
-  }
-
-  // Initialize Scene 0
-  goToScene(0);
 });
