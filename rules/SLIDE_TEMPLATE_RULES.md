@@ -68,3 +68,38 @@
   * <kbd>←</kbd> / <kbd>Backspace</kbd> / <kbd>PageUp</kbd>: Previous slide
   * <kbd>F</kbd>: Fullscreen toggle
 * **Print / Export:** Optimized `@media print` CSS for 16:9 PDF export.
+
+---
+
+## 7. Slide Container Boundary & Image Containment Rules
+
+* **Strict Slide Canvas Containment:** All content images, diagrams, vector SVGs, and illustrations **must remain strictly contained within the `.slide-container` canvas**.
+* **Zero Edge Bleed:** No illustration element, subject extremity (e.g. hands, mobile phone screens, wrists, cables, server edges), or graphic badge may touch, bleed over, or extend beyond the slide container boundary.
+* **Safe Margin Standard:** Visual content must maintain a minimum inner clearance of `48px` to `64px` from all four slide borders (top, bottom, left, and right).
+* **Clearance from Left Brand Accent Bar:** Illustrations must maintain at least `48px` of clean white space from the left dual-color brand stripe (`.slide-left-accent`), ensuring zero visual overlap or collision.
+* **Whole Subject Framing:** All artwork subjects must be framed completely within the SVG artboard and `viewBox`. Extremities must never be cropped or cut off at the edge of the artwork.
+* **CSS Enforcement Standard:** All visual containers (`.slide-visual-stage`, `.slide-right-visual`, etc.) must enforce:
+  * `overflow: hidden;`
+  * `width: 100%; height: 100%;`
+  * `max-width: 100%; max-height: 100%;`
+  * Vector SVGs must use `object-fit: contain;` and safe internal padding (`clamp(8px, 1.5cqh, 16px) clamp(16px, 2cqw, 32px)`).
+
+---
+
+## 8. Diagram Flow Arrows & Label Clarity
+
+* **Single Arrow Rule:** Avoid cluttering diagrams with multiple or conflicting arrows. Each flow path (e.g. Request vs. Response) must have **exactly one clean, unambiguous arrowhead** pointing in the true flow direction.
+* **No Redundant Text Arrows:** Do not place arrow symbols (`->`, `<-`, `&rarr;`, `&larr;`) inside text badges, title cards, or pill containers (e.g. use `REQUEST (MESSAGE)` and `RESPONSE (DELIVERY CONFIRMATION)`, not `REQUEST &rarr;`).
+* **Correct Marker / Line Direction:** Flow return lines (e.g. Response flowing from server back to client) must explicitly orient leftwards towards the client device without orientation flipping bugs.
+
+---
+
+## 9. Name Prohibition Policy (No "Xiaohei" / "xio...")
+
+* **Strict Prohibition:** **Never mention, print, or display the name "Xiaohei" or any variation ("xio...")** in slide titles, subtitles, text badges, UI containers, descriptive cards, or presentation scripts.
+* **Functional Role-Based Labeling:** Refer to the deadpan doodle character and system elements by technical or architectural role only:
+  * "System Operator"
+  * "Client App"
+  * "Dispatches Data Packet"
+  * "User Agent"
+  * "Backend Dispatcher"

@@ -1,17 +1,18 @@
-# Xiaohei Character Design System & Consistency Rules
-> **Reference Repository:** [helloianneo/ian-xiaohei-illustrations](https://github.com/helloianneo/ian-xiaohei-illustrations)  
-> **Workshop Story:** The Journey of Selma — Building, Hosting & Securing Application Architecture
+# System Operator Character Design System & Consistency Rules
+> **Reference Style:** Clean Hand-Drawn Technical Architecture & Doodle Operator Style  
+> **Workshop Story:** Building, Hosting & Securing Application Architecture
+> **Naming Constraint:** NEVER use or mention the name "Xiaohei" or "xio..." in presentations or slide text.
 
 ---
 
 ## 1. Core Identity & Philosophy
 
-**Xiaohei (小黑)** is not a mascot, not a decorative sticker, and not a cute cartoon animal.  
+The **System Operator** is not a mascot, not a decorative sticker, and not a cute cartoon animal.  
 He is an **earnest, deadpan backstage system operator**.
 
 * **Role:** He actively performs the operational task in each scene (pinning the blueprint, pulling the theater curtain, carrying packets, locking doors, ringing alarm bells).
 * **Personality:** Focused, quiet, low-key, calm in the middle of complexity, serious about absurdly concrete tasks.
-* **Golden Rule:** *If you remove Xiaohei from the scene and the visual still explains the concept fully, Xiaohei was used as mere decoration.* Xiaohei must always be hands-on with the primary object.
+* **Golden Rule:** *If you remove the operator from the scene and the visual still explains the concept fully, he was used as mere decoration.* The operator must always be hands-on with the primary object.
 
 ---
 
@@ -44,13 +45,13 @@ The base character model **never changes across any slide**:
 
 ## 3. Modular Add-On Accessories System
 
-In future workshop scenes, Xiaohei needs to wear or wield props to reflect specific infrastructure and security responsibilities. **Follow these strict guidelines when adding accessories:**
+In future workshop scenes, the operator needs to wear or wield props to reflect specific infrastructure and security responsibilities. **Follow these strict guidelines when adding accessories:**
 
 ### Rules for Accessories
 1. **Maximum 1–2 items per scene:** Never overburden the character. The solid black bean body must always dominate.
 2. **Hand-drawn doodle style:** Accessories must match the thin wobbly pen linework.
 3. **Color restraint:** Accessories should be primarily black line art with at most **one** accent color (orange `#EA580C`, red `#DC2626`, or blue `#2563EB`).
-4. **Never alter the base body:** Xiaohei does not get pants, shirts, or full costumes. Only hats, handheld tools, or wearable badges.
+4. **Never alter the base body:** The operator does not get pants, shirts, or full costumes. Only hats, handheld tools, or wearable badges.
 
 ---
 
@@ -78,7 +79,7 @@ In future workshop scenes, Xiaohei needs to wear or wield props to reflect speci
 * **Keyhole Shield:** Holding a hand-drawn shield to block unauthorized tokens.
 
 #### E. Vulnerabilities & Code Scanners (SAST, DAST, Pen-Testing)
-* **Handheld Magnifying Glass:** Xiaohei peering through a glass circle inspecting lines of code.
+* **Handheld Magnifying Glass:** Operator peering through a glass circle inspecting lines of code.
 * **Flashlight / Torch:** Shining a narrow beam into dark backend crevices to uncover hidden bugs.
 * **Safety Goggles:** Resting above his white dot eyes while inspecting hot pipes.
 
@@ -95,7 +96,7 @@ Every generated slide illustration must follow these framing constraints:
 
 * **Aspect Ratio:** `16:9` horizontal orientation.
 * **Canvas Background:** Pure `#FFFFFF` white. **No** beige tones, **no** vintage paper grain, **no** wall textures.
-* **Subject Scale:** The central action (Xiaohei + main equipment) occupies **40% to 55%** of the canvas.
+* **Subject Scale:** The central action (Operator + main equipment) occupies **40% to 55%** of the canvas.
 * **Whitespace Rule:** At least **40% of the canvas must remain completely blank** to allow interactive HTML cards, buttons, badges, and tooltips to overlay without visual crowding.
 * **No Raster Text in Image:** Never generate paragraphs, titles, or English/Chinese sentences inside the artwork. Leave labels to HTML/CSS for responsive, crisp rendering and multi-language support.
 
@@ -112,13 +113,13 @@ Pure white background #FFFFFF with no gradients, no paper texture, no shadows.
 Thin black slightly wobbly ink linework, generous whitespace (over 40% empty space).
 
 Recurring Character:
-Xiaohei (小黑), a solid-black bean-shaped doodle character with two tiny white circular dot eyes, thin stick limbs, and an earnest deadpan expression.
+System Operator, a solid-black bean-shaped doodle character with two tiny white circular dot eyes, thin stick limbs, and an earnest deadpan expression.
 
 Accessory / Prop:
-[Specify 1-2 accessories, e.g.: "Xiaohei is wearing a simple yellow safety hard hat and holding a thin hand-drawn wrench."]
+[Specify 1-2 accessories, e.g.: "Operator is wearing a simple yellow safety hard hat and holding a thin hand-drawn wrench."]
 
 Scene Action & Composition:
-[Describe the core action, e.g.: "Xiaohei is standing on a small wooden platform on the left, bolting together three stacked container blocks labeled with simple doodle icons. A cloud outline sits above."]
+[Describe the core action, e.g.: "Operator is standing on a small wooden platform on the left, bolting together three stacked container blocks labeled with simple doodle icons. A cloud outline sits above."]
 
 Color Accents:
 Restrained orange (#EA580C) for paths/flow and red (#DC2626) for highlights. Black ink for main line art.
@@ -131,7 +132,7 @@ NO written text or letters, NO realistic 3D rendering, NO complex gradients, NO 
 
 ## 6. Slide-by-Slide Reference Log
 
-| Scene # | Scene Title | Xiaohei Action | Accessories Used | Status |
+| Scene # | Scene Title | Operator Action | Accessories Used | Status |
 | :---: | :--- | :--- | :--- | :---: |
 | **01** | Start with an app, not a scanner | Standing on stool, pinning Selma app blueprint card onto drafting easel | Wooden stool, drafting easel, tape badge | **Implemented** |
 | **02** | What is IT infrastructure? | Pulling theatre curtain rope to unveil the 6 stage actors | Dangling stage rope, platform stage | **Implemented** |
